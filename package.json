@@ -1,0 +1,44 @@
+{
+  "name": "microgen",
+  "version": "1.0.0",
+  "description": "micro-generator for individual files, easy like sunday morning",
+  "bin": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/tap test/index.js --coverage-report=text",
+    "lint": "./node_modules/.bin/eslint index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/busterc/microgen.git"
+  },
+  "keywords": [
+    "generators",
+    "generator",
+    "generate",
+    "handlebars",
+    "handlebarsjs",
+    "cli",
+    "prompt",
+    "inquirer",
+    "yo",
+    "plop",
+    "templates",
+    "template",
+    "micro-generator"
+  ],
+  "author": "Buster Collings <busterc@gmail.com> (https://about.me/buster)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/busterc/microgen/issues"
+  },
+  "homepage": "https://github.com/busterc/microgen#readme",
+  "dependencies": {
+    "handlebars": "^4.0.5"
+  },
+  "devDependencies": {
+    "eslint": "^2.8.0",
+    "eslint-config-xo-space": "^0.12.0",
+    "mkdirp": "^0.5.1",
+    "tap": "^5.7.1"
+  }
+}
