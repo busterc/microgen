@@ -84,7 +84,7 @@ You can use handlebars conditional blocks too, so if you wanted to add optional 
 
 ## Respect
 
-**microgen** was inspired by [`khaos`](github.com/segmentio/khaos)
+**microgen** was inspired by [`khaos`](https://github.com/segmentio/khaos)
 
 _If you need heavy weight project scaffolding generators, then look into [`plop`](https://github.com/amwmedia/plop) and [`yo`](https://github.com/yeoman/yo)_
 
