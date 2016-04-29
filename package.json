@@ -1,6 +1,6 @@
 {
   "name": "microgen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "micro-generator for individual files, easy like sunday morning",
   "bin": "index.js",
   "scripts": {
@@ -36,8 +36,8 @@
     "handlebars": "^4.0.5"
   },
   "devDependencies": {
-    "eslint": "^2.8.0",
-    "eslint-config-xo-space": "^0.12.0",
+    "eslint": "^2.9.0",
+    "eslint-config-xo-space": "^0.13.0",
     "mkdirp": "^0.5.1",
     "tap": "^5.7.1"
   }

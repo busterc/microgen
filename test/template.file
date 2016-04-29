@@ -20,3 +20,5 @@ yummy food: {{yummy-food}}
 yucky food: {{yucky-food}}
 {{/dislikes}}
 {{/likes}}
+
+{{!adios amigos}}

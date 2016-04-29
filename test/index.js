@@ -25,7 +25,7 @@ test('make the testing output directory', t => {
 });
 
 test('validate output file has all answers', t => {
-  t.plan(7);
+  t.plan(10);
 
   var command = exec(`node ${cli} ${templateFile} ${outputAllFile}`, {
     cwd: __dirname,
@@ -46,8 +46,25 @@ test('validate output file has all answers', t => {
   ];
 
   command.stdout.on('data', data => {
+
+    // test indent
+    if (data.match('  info:')) {
+      t.pass();
+    }
+
+    // test sub-indent
+    if (data.match('    yucky-food:')) {
+      t.pass();
+    }
+
+    // test comment display
+    if (data.match('adios amigos')) {
+      t.pass();
+      return;
+    }
+
     if (data.match(/\r?\n/)) {
-      // empty line
+      // empty lines, etc.
       return;
     }
 

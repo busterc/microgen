@@ -34,6 +34,18 @@ var id;
 function prepare(ast, parent) {
   ast.forEach(statement => {
     switch (statement.type) {
+      case 'CommentStatement':
+        id = `comment-${Math.random().toString(16).slice(2)}`;
+
+        if (parent[id]) {
+          return;
+        }
+
+        parent[id] = {
+          type: 'comment',
+          value: statement.value
+        };
+        break;
       case 'MustacheStatement':
         id = statement.path.original;
 
@@ -54,7 +66,7 @@ function prepare(ast, parent) {
           };
         }
 
-        if (statement.program) {
+        if (statement.program.body) {
           prepare(statement.program.body, parent[id]);
         }
         break;
@@ -79,49 +91,67 @@ const rl = readline.createInterface({
 console.log('');
 
 var ids = Object.keys(prompts);
-(function ask(ids, parent, callback) {
+(function ask(ids, parent, depth, callback) {
   let id = ids.shift();
   if (!id) {
     return callback(null);
+  }
+
+  // this is just for display
+  var indent = '';
+  var _depth = 0;
+  while (_depth < depth) {
+    indent += '  ';
+    _depth++;
   }
 
   var variable = parent[id];
   var defaultValue;
   var defaultChoices;
 
-  if (variable.type === 'boolean') {
-    defaultChoices = ' (Y/n)';
-  } else {
-    defaultValue = variable.value ? `${variable.value}` : '';
-    defaultChoices = defaultValue.length ? ` (${defaultValue})` : '';
+  switch (variable.type) {
+    case 'boolean':
+      defaultChoices = ' (Y/n)';
+      break;
+    case 'comment':
+      console.log(`${indent}${variable.value}`);
+      return ask(ids, parent, depth, callback);
+    default: // string
+      defaultValue = variable.value ? `${variable.value}` : '';
+      defaultChoices = defaultValue.length ? ` (${defaultValue})` : '';
+      break;
   }
 
-  rl.question(`  ${id}${defaultChoices}: `, answer => {
+  rl.question(`${indent}${id}${defaultChoices}: `, answer => {
     answer = answer.trim();
     if (variable.type === 'boolean') {
       var dig;
-      // answers[id] = dig = (answer === 'n') ? false : true;
       answers[id] = dig = answer !== 'n';
 
       if (dig) {
         var digIds = (Object.keys(variable)).filter(value => {
           return value !== 'type' && value !== 'value';
         });
-        return ask(digIds, variable, error => {
+
+        depth++;
+
+        return ask(digIds, variable, depth, error => {
           if (error) {
             throw error;
           }
 
-          ask(ids, parent, callback);
+          depth--;
+
+          ask(ids, parent, depth, callback);
         });
       }
-      ask(ids, parent, callback);
+      ask(ids, parent, depth, callback);
     } else {
       answers[id] = answer.length ? answer : defaultValue;
-      ask(ids, parent, callback);
+      ask(ids, parent, depth, callback);
     }
   });
-})(ids, prompts, error => {
+})(ids, prompts, 0, error => {
   if (error) {
     throw error;
   }

@@ -33,32 +33,22 @@ $ microgen --help
 
 A microgen template is any **file** that can have [handlebars placeholders](http://handlebarsjs.com/). Microgen will scan the template for placeholders and prompt you to fill in a value for each one.
 
-For example, say you have a `package.json` file:
+Supported Placeholders:
+- Variable `{{some-value}}`
+- Block `{{#some-boolean}}something{{/some-boolean}}`
+- Comment `{{!some string to display when prompting}}`
+
+For example, say you have a `package.json` _template_ file:
 
 ```js
-{
-  "name": "{{name}}",
-  "repository": "{{owner}}/{{name}}",
-  "description": "{{description}}"
-}
-```
-
-Microgen sees that and knows to prompt you for a `name`, `owner`, and `description` when generating the template, like so...
-
-```sh
-  name: smile
-  owner: busterc
-  description: writes :) to stdout
-```
-
-You can use handlebars conditional blocks too, so if you wanted to add optional dependencies...
-
-```js
+{{!
+== Let the Good Times Roll ==
+}}
 {
   "name": "{{name}}",
   "repository": "{{owner}}/{{name}}",
   "description": "{{description}}",
-{{#include-dependencies}}
+{{!}}{{#include-dependencies}}
   "dependencies": {
 {{#assert-dotenv}}
     "assert-dotenv": "3.0.0",
@@ -71,15 +61,34 @@ You can use handlebars conditional blocks too, so if you wanted to add optional 
 }
 ```
 
-...and microgen is smart enough to know that `include-dependencies`, etc., are booleans when it prompts you...
+Microgen will prompt you like so:
 
 ```sh
-  name: smile
-  owner: busterc
-  description: writes :) to stdout
-  include-dependencies (Y/n): y
+
+
+== Let the Good Times Roll ==
+
+name: smile
+owner: busterc
+description: writes :) to stdout
+
+include-dependencies (Y/n): y
   assert-dotenv (Y/n): y
   meow (Y/n): n
+```
+
+...and the resulting output file will contain:
+
+```json
+{
+  "name": "smile",
+  "repository": "busterc/smile",
+  "description": "writes :) to stdout",
+
+  "dependencies": {
+    "assert-dotenv": "3.0.0",
+  }
+}
 ```
 
 ## Respect
