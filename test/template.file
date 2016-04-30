@@ -21,4 +21,14 @@ yucky food: {{yucky-food}}
 {{/dislikes}}
 {{/likes}}
 
+{{#funny}}
+LOL
+{{else}}{{#sexy}}
+ahh yeah
+{{^}}{{#boring}}
+huh, sorry, i fell asleep
+{{/boring}}
+{{/sexy}}
+{{/funny}}
+
 {{!adios amigos}}

@@ -33,10 +33,14 @@ $ microgen --help
 
 A microgen template is any **file** that can have [handlebars placeholders](http://handlebarsjs.com/). Microgen will scan the template for placeholders and prompt you to fill in a value for each one.
 
-Supported Placeholders:
+Supported placeholders:
 - Variable `{{some-value}}`
-- Block `{{#some-boolean}}something{{/some-boolean}}`
+- Block `{{#some-boolean}}something{{else}}something else{{/some-boolean}}`
+  - `{{^}}` is the same as `{{else}}`
+  - You can use string literals, e.g. `{{#"Are you happy"}}great{{/"Are you happy"}}`
 - Comment `{{!some string to display when prompting}}`
+  - `{{!--x--}}` is the same as `{{!x}}`
+  - `{{!}}` just adds a newline to the display
 
 For example, say you have a `package.json` _template_ file:
 
@@ -48,16 +52,15 @@ For example, say you have a `package.json` _template_ file:
   "name": "{{name}}",
   "repository": "{{owner}}/{{name}}",
   "description": "{{description}}",
-{{!}}{{#include-dependencies}}
+{{!}}{{#"Include Dependencies"}}
   "dependencies": {
 {{#assert-dotenv}}
-    "assert-dotenv": "3.0.0",
-{{/assert-dotenv}}
-{{#meow}}
-    "meow": "^3.0.0",
-{{/meow}}
+    "assert-dotenv": "3.0.0",{{/assert-dotenv}}{{!}}{{#"Use a CLI Helper [meow, inquirer, commander]"}}{{#meow}}
+    "meow": "^3.0.0",{{else}}{{#inquirer}}
+    "inquirer": "^1.0.2",{{^}}{{#commander}}
+    "commander": "^2.9.0",{{/commander}}{{/inquirer}}{{/meow}}{{/"Use a CLI Helper [meow, inquirer, commander]"}}
   }
-{{/include-dependencies}}
+{{/"Include Dependencies"}}
 }
 ```
 
@@ -72,9 +75,13 @@ name: smile
 owner: busterc
 description: writes :) to stdout
 
-include-dependencies (Y/n): y
+Include Dependencies (Y/n): y
   assert-dotenv (Y/n): y
-  meow (Y/n): n
+  
+  Use a CLI Helper [meow, inquirer, commander] (Y/n): y
+    meow (Y/n): n
+      inquirer (Y/n): n
+        commander (Y/n): y
 ```
 
 ...and the resulting output file will contain:
@@ -87,6 +94,7 @@ include-dependencies (Y/n): y
 
   "dependencies": {
     "assert-dotenv": "3.0.0",
+    "commander": "^2.9.0",
   }
 }
 ```

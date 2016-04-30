@@ -1,6 +1,6 @@
 {
   "name": "microgen",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "micro-generator for individual files, easy like sunday morning",
   "bin": "index.js",
   "scripts": {

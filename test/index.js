@@ -25,7 +25,7 @@ test('make the testing output directory', t => {
 });
 
 test('validate output file has all answers', t => {
-  t.plan(10);
+  t.plan(11);
 
   var command = exec(`node ${cli} ${templateFile} ${outputAllFile}`, {
     cwd: __dirname,
@@ -42,7 +42,8 @@ test('validate output file has all answers', t => {
     'y\r', // likes
     'tacos\r', // yummy-food
     'Y\r', // dislikes
-    'mushrooms\r' // yucky-food
+    'mushrooms\r', // yucky-food
+    '\r', // funny
   ];
 
   command.stdout.on('data', data => {
@@ -86,7 +87,8 @@ test('validate output file has all answers', t => {
       '| | | | | | | (__| | | (_) | (_| |  __/ | | |', // ascii-art
       'more info: whatcha know',
       'yummy food: tacos',
-      'yucky food: mushrooms'
+      'yucky food: mushrooms',
+      'LOL'
     ];
 
     expected.forEach(value => {
@@ -98,7 +100,7 @@ test('validate output file has all answers', t => {
 });
 
 test('validate output file has only some answers', t => {
-  t.plan(7);
+  t.plan(10);
 
   var command = exec(`node ${cli} ${templateFile} ${outputSomeFile}`, {
     cwd: __dirname,
@@ -111,7 +113,10 @@ test('validate output file has only some answers', t => {
     'bootylicous\r', // description
     'n\r', // ascii-art
     'n\r', // more
-    'n\r' // likes
+    'n\r', // likes
+    'n\r', // funny
+    'n\r', // sexy
+    '\r', // boring
   ];
 
   command.stdout.on('data', data => {
@@ -134,14 +139,17 @@ test('validate output file has only some answers', t => {
     var expected = [
       'basename: all-about-that-base',
       'name: badonkadonk',
-      'description: bootylicous'
+      'description: bootylicous',
+      'huh, sorry, i fell asleep'
     ];
 
     var unexpected = [
       '| | | | | | | (__| | | (_) | (_| |  __/ | | |', // ascii-art
       'more info:',
       'yummy food:',
-      'yucky food:'
+      'yucky food:',
+      'LOL',
+      'ahh yeah'
     ];
 
     expected.forEach(value => {

@@ -69,6 +69,14 @@ function prepare(ast, parent) {
         if (statement.program.body) {
           prepare(statement.program.body, parent[id]);
         }
+
+        if (statement.inverse && typeof statement.inverse === 'object') {
+          parent[id].inverse = {
+            // type: 'inverse'
+          };
+          prepare(statement.inverse.body, parent[id].inverse);
+        }
+
         break;
       default:
         // carry on
@@ -124,31 +132,59 @@ var ids = Object.keys(prompts);
 
   rl.question(`${indent}${id}${defaultChoices}: `, answer => {
     answer = answer.trim();
-    if (variable.type === 'boolean') {
-      var dig;
-      answers[id] = dig = answer !== 'n';
 
-      if (dig) {
-        var digIds = (Object.keys(variable)).filter(value => {
-          return value !== 'type' && value !== 'value';
-        });
+    switch (variable.type) {
+      case 'boolean':
+        var dig;
+        answers[id] = dig = answer !== 'n';
 
-        depth++;
+        var digIds;
+        if (dig) {
+          digIds = (Object.keys(variable)).filter(value => {
+            return value !== 'type' && value !== 'value' && value !== 'inverse';
+          });
 
-        return ask(digIds, variable, depth, error => {
-          if (error) {
-            throw error;
-          }
+          depth++;
 
-          depth--;
+          return ask(digIds, variable, depth, error => {
+            if (error) {
+              throw error;
+            }
 
-          ask(ids, parent, depth, callback);
-        });
-      }
-      ask(ids, parent, depth, callback);
-    } else {
-      answers[id] = answer.length ? answer : defaultValue;
-      ask(ids, parent, depth, callback);
+            depth--;
+
+            ask(ids, parent, depth, callback);
+          });
+        }
+
+        // inverse / else clause
+        if (variable.inverse && typeof variable.inverse === 'object' && Object.keys(variable.inverse).length) {
+          digIds = (Object.keys(variable.inverse)).filter(value => {
+            return value !== 'type' && value !== 'value';
+          });
+
+          depth++;
+
+          return ask(digIds, variable.inverse, depth, error => {
+            if (error) {
+              throw error;
+            }
+
+            depth--;
+
+            ask(ids, parent, depth, callback);
+          });
+        }
+
+        ask(ids, parent, depth, callback);
+        break;
+      case 'string':
+        answers[id] = answer.length ? answer : defaultValue;
+        ask(ids, parent, depth, callback);
+        break;
+      default:
+        // carry on
+        break;
     }
   });
 })(ids, prompts, 0, error => {
