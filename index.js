@@ -7,6 +7,7 @@ const args = process.argv.slice(2);
 if (args.length === 0 || args[0] === '-h' || args[0] === '--help' || args.length < 2) {
   console.log('\n  Usage: microgen <template-file> <output-file>\n');
   console.log('  Options:\n\n    -h, --help    show usage help\n');
+  console.log(`  Version: ${require('./package.json').version}`);
   process.exit(1);
 }
 
@@ -29,9 +30,10 @@ try {
 var ast = Handlebars.parse(template).body;
 var prompts = {};
 var answers = {};
-var id;
 
-function prepare(ast, parent) {
+(function prepare(ast, parent) {
+  var id;
+
   ast.forEach(statement => {
     switch (statement.type) {
       case 'CommentStatement':
@@ -71,21 +73,16 @@ function prepare(ast, parent) {
         }
 
         if (statement.inverse && typeof statement.inverse === 'object') {
-          parent[id].inverse = {
-            // type: 'inverse'
-          };
+          parent[id].inverse = {};
           prepare(statement.inverse.body, parent[id].inverse);
         }
-
         break;
       default:
         // carry on
         break;
     }
   });
-}
-
-prepare(ast, prompts);
+})(ast, prompts);
 
 if (prompts.basename && prompts.basename.type === 'string') {
   prompts.basename.value = basename;
@@ -99,6 +96,7 @@ const rl = readline.createInterface({
 console.log('');
 
 var ids = Object.keys(prompts);
+
 (function ask(ids, parent, depth, callback) {
   let id = ids.shift();
   if (!id) {
@@ -184,7 +182,6 @@ var ids = Object.keys(prompts);
         break;
       default:
         // carry on
-        break;
     }
   });
 })(ids, prompts, 0, error => {

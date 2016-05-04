@@ -31,4 +31,22 @@ huh, sorry, i fell asleep
 {{/sexy}}
 {{/funny}}
 
+{{#"Pile On"}}
+  {{#thick}}
+  NO
+  {{^}}
+  NEVER
+  {{/thick}}
+{{^}}
+  {{#"Dig Shallow"}}
+  lame
+  {{^}}
+    {{#"Real Deep"}}
+    You cannot dig out of a hole
+    {{^}}
+    what's the point then
+    {{/"Real Deep"}}
+  {{/"Dig Shallow"}}
+{{/"Pile On"}}
+
 {{!adios amigos}}
