@@ -4,10 +4,26 @@
 
 const args = process.argv.slice(2);
 
-if (args.length === 0 || args[0] === '-h' || args[0] === '--help' || args.length < 2) {
-  console.log('\n  Usage: microgen <template-file> <output-file>\n');
-  console.log('  Options:\n\n    -h, --help    show usage help\n');
-  console.log(`  Version: ${require('./package.json').version}`);
+if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
+  var usage = `
+  Usage: microgen <template-file> [output-file]
+
+  Options:
+
+    -h, --help      show usage help
+
+    output-file     if not specified, it will be $PWD/<template-file>
+                    * if <template-file> has an ".hbs" extension,
+                      it will be removed from the output-file name
+
+  Version: ${require('./package.json').version}
+`;
+
+  console.log(usage);
+
+  // console.log('\n  Usage: microgen <template-file> [output-file]\n');
+  // console.log('  Options:\n\n    -h, --help    show usage help\n');
+  // console.log(`  Version: ${require('./package.json').version}`);
   process.exit(1);
 }
 
@@ -17,7 +33,8 @@ var path = require('path');
 var readline = require('readline');
 
 var templateFile = args[0];
-var outputFile = args[1];
+var templateFileBasename = path.basename(templateFile, '.hbs');
+var outputFile = args[1] || path.join(process.cwd(), templateFileBasename);
 var basename = path.basename(process.cwd());
 var template;
 try {

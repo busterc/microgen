@@ -21,11 +21,15 @@ $ npm install --global microgen
 ```sh
 $ microgen --help
 
-  Usage: microgen <template-file> <output-file>
+  Usage: microgen <template-file> [output-file]
 
   Options:
 
-    -h, --help    show usage help
+    -h, --help      show usage help
+
+    output-file     if not specified, it will be $PWD/<template-file>
+                    * if <template-file> has an ".hbs" extension,
+                      it will be removed from the output-file name
 
 ```
 

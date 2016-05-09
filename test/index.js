@@ -7,13 +7,18 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var cli = path.resolve(__dirname, '../index.js');
 var templateFile = path.resolve(__dirname, 'template.file');
+var templateFile2 = path.resolve(__dirname, 'template.file2');
+var templateFile2Output = path.resolve(__dirname, 'output/template.file2');
+var templateFile3 = path.resolve(__dirname, 'template.file3.hbs');
+var templateFile3Output = path.resolve(__dirname, 'output/template.file3');
 var outputAllFile = path.resolve(__dirname, 'output/output-all.file');
 var outputSomeFile = path.resolve(__dirname, 'output/output-some.file');
+var outputDirectory;
 
 test('make the testing output directory', t => {
   t.plan(1);
 
-  var outputDirectory = path.resolve(__dirname, 'output/');
+  outputDirectory = path.resolve(__dirname, 'output/');
 
   mkdirp(outputDirectory, error => {
     if (error) {
@@ -169,6 +174,70 @@ test('validate output file has only some answers', t => {
 
     unexpected.forEach(value => {
       if (outputContents.indexOf(value) === -1) {
+        t.pass();
+      }
+    });
+  });
+});
+
+test('unspecified output file writes to CWD', t => {
+  t.plan(2);
+
+  var command = exec(`node ${cli} ${templateFile2}`, {
+    cwd: outputDirectory,
+    stdio: 'pipe'
+  });
+
+  command.stdout.on('data', data => {
+    // test output
+    if (data.match('Working Hard')) {
+      t.pass();
+    }
+
+    command.stdin.end();
+  });
+
+  command.on('close', () => {
+    var outputContents = fs.readFileSync(templateFile2Output, 'utf8');
+
+    var expected = [
+      'Hardly Working'
+    ];
+
+    expected.forEach(value => {
+      if (outputContents.indexOf(value) > -1) {
+        t.pass();
+      }
+    });
+  });
+});
+
+test('unspecified output file writes to CWD, removing ".hbs" extension', t => {
+  t.plan(2);
+
+  var command = exec(`node ${cli} ${templateFile3}`, {
+    cwd: outputDirectory,
+    stdio: 'pipe'
+  });
+
+  command.stdout.on('data', data => {
+    // test output
+    if (data.match('I can ride my bike with no handlebars')) {
+      t.pass();
+    }
+
+    command.stdin.end();
+  });
+
+  command.on('close', () => {
+    var outputContents = fs.readFileSync(templateFile3Output, 'utf8');
+
+    var expected = [
+      'No Handlebars'
+    ];
+
+    expected.forEach(value => {
+      if (outputContents.indexOf(value) > -1) {
         t.pass();
       }
     });
