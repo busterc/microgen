@@ -120,6 +120,11 @@ var ids = Object.keys(prompts);
     return callback(null);
   }
 
+  // ignore prompt if already answered
+  if (answers.hasOwnProperty(id)) {
+    return ask(ids, parent, depth, callback);
+  }
+
   // this is just for display
   var indent = '';
   var _depth = 0;

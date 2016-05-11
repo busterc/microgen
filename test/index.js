@@ -30,7 +30,7 @@ test('make the testing output directory', t => {
 });
 
 test('validate output file has all answers', t => {
-  t.plan(12);
+  t.plan(13);
 
   var command = exec(`node ${cli} ${templateFile} ${outputAllFile}`, {
     cwd: __dirname,
@@ -97,7 +97,8 @@ test('validate output file has all answers', t => {
       'yummy food: tacos',
       'yucky food: mushrooms',
       'LOL',
-      'You cannot dig out of a hole'
+      'You cannot dig out of a hole',
+      '¯\\_(ツ)_/¯'
     ];
 
     expected.forEach(value => {
