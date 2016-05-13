@@ -4,7 +4,6 @@ var exec = require('child_process').exec;
 var test = require('tap').test;
 var path = require('path');
 var fs = require('fs');
-var mkdirp = require('mkdirp');
 var cli = path.resolve(__dirname, '../index.js');
 var templateFile = path.resolve(__dirname, 'template.file');
 var templateFile2 = path.resolve(__dirname, 'template.file2');
@@ -13,21 +12,7 @@ var templateFile3 = path.resolve(__dirname, 'template.file3.hbs');
 var templateFile3Output = path.resolve(__dirname, 'output/template.file3');
 var outputAllFile = path.resolve(__dirname, 'output/output-all.file');
 var outputSomeFile = path.resolve(__dirname, 'output/output-some.file');
-var outputDirectory;
-
-test('make the testing output directory', t => {
-  t.plan(1);
-
-  outputDirectory = path.resolve(__dirname, 'output/');
-
-  mkdirp(outputDirectory, error => {
-    if (error) {
-      return t.fail();
-    }
-
-    t.pass();
-  });
-});
+var outputDirectory = path.resolve(__dirname, 'output/');
 
 test('validate output file has all answers', t => {
   t.plan(13);

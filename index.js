@@ -20,15 +20,11 @@ if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
 `;
 
   console.log(usage);
-
-  // console.log('\n  Usage: microgen <template-file> [output-file]\n');
-  // console.log('  Options:\n\n    -h, --help    show usage help\n');
-  // console.log(`  Version: ${require('./package.json').version}`);
   process.exit(1);
 }
 
 var Handlebars = require('handlebars');
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var readline = require('readline');
 
@@ -213,5 +209,5 @@ var ids = Object.keys(prompts);
 
   rl.close();
   var result = Handlebars.compile(template)(answers);
-  fs.writeFileSync(outputFile, result, 'utf8');
+  fs.outputFileSync(outputFile, result, 'utf8');
 });
