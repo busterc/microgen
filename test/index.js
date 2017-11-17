@@ -175,7 +175,6 @@ test('unspecified output file writes to CWD', t => {
   });
 
   command.stdout.on('data', data => {
-    // test output
     if (data.match('Working Hard')) {
       t.pass();
     }
@@ -207,7 +206,6 @@ test('unspecified output file writes to CWD, removing ".hbs" extension', t => {
   });
 
   command.stdout.on('data', data => {
-    // test output
     if (data.match('I can ride my bike with no handlebars')) {
       t.pass();
     }
@@ -227,5 +225,27 @@ test('unspecified output file writes to CWD, removing ".hbs" extension', t => {
         t.pass();
       }
     });
+  });
+});
+
+test('pipe to stdout', t => {
+  t.plan(4);
+
+  ['-p', '--pipe'].map(option => {
+    var command = exec(`node ${cli} ${templateFile3} ${option}`, {
+      cwd: outputDirectory,
+      stdio: 'pipe'
+    });
+
+    command.stdout.on('data', data => {
+      if (data.match('I can ride my bike with no handlebars')) {
+        t.pass();
+      }
+      if (data.match('No Handlebars')) {
+        t.pass();
+      }
+      command.stdin.end();
+    });
+    return option;
   });
 });

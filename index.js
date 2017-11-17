@@ -11,6 +11,7 @@ if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
   Options:
 
     -h, --help      show usage help
+    -p, --pipe      pipe output to stdout, instead of writing to file
 
     output-file     if not specified, it will be $PWD/<template-file>
                     * if <template-file> has an ".hbs" extension,
@@ -91,7 +92,6 @@ var answers = {};
         }
         break;
       default:
-        // carry on
         break;
     }
   });
@@ -117,11 +117,11 @@ var ids = Object.keys(prompts);
   }
 
   // ignore prompt if already answered
-  if (answers.hasOwnProperty(id)) {
+  if (Object.prototype.hasOwnProperty.call(answers, id)) {
     return ask(ids, parent, depth, callback);
   }
 
-  // this is just for display
+  // This is just for display
   var indent = '';
   var _depth = 0;
   while (_depth < depth) {
@@ -140,7 +140,7 @@ var ids = Object.keys(prompts);
     case 'comment':
       console.log(`${indent}${variable.value}`);
       return ask(ids, parent, depth, callback);
-    default: // string
+    default: // String
       defaultValue = variable.value ? `${variable.value}` : '';
       defaultChoices = defaultValue.length ? ` (${defaultValue})` : '';
       break;
@@ -152,7 +152,8 @@ var ids = Object.keys(prompts);
     switch (variable.type) {
       case 'boolean':
         var dig;
-        answers[id] = dig = answer !== 'n';
+        dig = answer !== 'n';
+        answers[id] = dig;
 
         var digIds;
         if (dig) {
@@ -173,7 +174,7 @@ var ids = Object.keys(prompts);
           });
         }
 
-        // inverse / else clause
+        // Inverse / else clause
         if (variable.inverse && typeof variable.inverse === 'object' && Object.keys(variable.inverse).length) {
           digIds = (Object.keys(variable.inverse)).filter(value => {
             return value !== 'type' && value !== 'value';
@@ -199,7 +200,7 @@ var ids = Object.keys(prompts);
         ask(ids, parent, depth, callback);
         break;
       default:
-        // carry on
+        break;
     }
   });
 })(ids, prompts, 0, error => {
@@ -207,7 +208,13 @@ var ids = Object.keys(prompts);
     throw error;
   }
 
+  rl.on('close', () => {
+    var result = Handlebars.compile(template)(answers);
+    if (outputFile === '-p' || outputFile === '--pipe') {
+      return console.log(result);
+    }
+    fs.outputFileSync(outputFile, result, 'utf8');
+  });
+
   rl.close();
-  var result = Handlebars.compile(template)(answers);
-  fs.outputFileSync(outputFile, result, 'utf8');
 });

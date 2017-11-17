@@ -13,7 +13,7 @@
 ## Installation
 
 ```sh
-$ npm install --global microgen
+$ npm install microgen # --global
 ```
 
 ## Usage
@@ -26,6 +26,7 @@ $ microgen --help
   Options:
 
     -h, --help      show usage help
+    -p, --pipe      pipe output to stdout, instead of writing to file
 
     output-file     if not specified, it will be $PWD/<template-file>
                     * if <template-file> has an ".hbs" extension,
