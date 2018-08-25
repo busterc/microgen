@@ -1,5 +1,7 @@
 # microgen [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/busterc/microgen.svg)](https://greenkeeper.io/)
+
 > micro-generator for individual files, easy like sunday morning
 
 ## Yet another generator; how's it different?
